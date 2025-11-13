@@ -10,10 +10,18 @@ A go-based CLI for translating strings to morse code.
 
 ## Quickstart
 
-This command will print the morse code string representation to standard output and write the sound to the file `carlitos.wav`.
+To translate text to Morse code, run:  
 
+```console
+morse 'Vamos' -s
 ```
-morse 'Let's go Carlos lets go' -so 'carlitos.wav'
+
+This command will write the string representation to standard output and play it on your speakers.
+
+To name the ouput file something different, use the `--file-name` (`-f`) flag. For example:
+
+```console
+morse 'Lets go, Carlos, lets go' -sf 'carlitos.wav'
 ```
 
 ## Roadmap
@@ -22,7 +30,7 @@ morse 'Let's go Carlos lets go' -so 'carlitos.wav'
 - [x] Make functions run in parallel
 - [x] Set up short-version flags
 - [x] Extend punctuation
-- [ ] Add a default file name for better ergonomics
+- [x] Add a default file name for better ergonomics
 - [ ] Enable editing sound qualities
   - [ ] Speed
   - [ ] Pitch

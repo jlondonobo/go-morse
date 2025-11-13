@@ -33,7 +33,7 @@ var morseDictionary = map[string]string{
 	"o":  "---",
 	"p":  ".--.",
 	"q":  "--.-",
-	"r":  "-.-",
+	"r":  ".-.",
 	"s":  "...",
 	"t":  "-",
 	"u":  "..-",
@@ -91,7 +91,8 @@ func main() {
 
 	var translateInput string
 	var play bool
-	var output string
+	var output bool
+	var file string
 
 	cmd := &cli.Command{
 		UseShortOptionHandling: true,
@@ -111,11 +112,17 @@ func main() {
 				Usage:       "plays on speakers",
 				Destination: &play,
 			},
-			&cli.StringFlag{
+			&cli.BoolFlag{
 				Name:        "output",
 				Aliases:     []string{"o"},
-				Usage:       "writes sound to wav file",
+				Usage:       "writes sound to sound.wav file",
 				Destination: &output,
+			},
+			&cli.StringFlag{
+				Name:        "output",
+				Aliases:     []string{"f"},
+				Usage:       "writes sound to wav file",
+				Destination: &file,
 			},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
@@ -124,9 +131,16 @@ func main() {
 			if play {
 				wg.Go(func() { sound.Play(seq) })
 			}
-			if len(output) > 0 {
-				wg.Go(func() { sound.Write(seq, output) })
+			if output && (len(file) > 0) {
+				log.Fatal("Cannot use --output and --output-file at the same time.")
+				return nil
 			}
+			if output {
+				wg.Go(func() { sound.Write(seq, "sound.wav") })
+			} else if len(file) > 0 {
+				wg.Go(func() { sound.Write(seq, file) })
+			}
+
 			wg.Wait()
 			return nil
 		},
