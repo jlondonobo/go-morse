@@ -5,8 +5,6 @@ import (
 	"os"
 	"time"
 
-	"sync"
-
 	"github.com/gopxl/beep/v2"
 	"github.com/gopxl/beep/v2/generators"
 	"github.com/gopxl/beep/v2/speaker"
@@ -23,7 +21,7 @@ const (
 func generate(s string) beep.Streamer {
 	sine, err := generators.SineTone(SampleRate, Frequency) // hardcode freq for now
 	if err != nil {
-		panic(err)
+		log.Fatal("Error generating sine tone")
 	}
 	silence := generators.Silence(-1)
 	// based on: https://morsecode.world/international/timing/
@@ -51,7 +49,7 @@ func generate(s string) beep.Streamer {
 	return beep.Seq(sounds...)
 }
 
-func Play(s string, wg *sync.WaitGroup) {
+func Play(s string) {
 	speaker.Init(SampleRate, 4800)
 
 	ch := make(chan struct{})
@@ -61,10 +59,9 @@ func Play(s string, wg *sync.WaitGroup) {
 	speaker.Play(sounds)
 	<-ch
 	time.Sleep(200 * time.Millisecond) // to ensure last signal plays
-	wg.Done()
 }
 
-func Write(s string, name string, wg *sync.WaitGroup) {
+func Write(s string, name string) {
 	finalStreamer := generate(s)
 	outFile, err := os.Create(name)
 	if err != nil {
@@ -76,5 +73,4 @@ func Write(s string, name string, wg *sync.WaitGroup) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	wg.Done()
 }

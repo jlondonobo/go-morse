@@ -106,12 +106,10 @@ func main() {
 			seq := toMorse(translateInput)
 			fmt.Println(seq)
 			if play {
-				wg.Add(1)
-				go sound.Play(seq, &wg)
+				wg.Go(func() { sound.Play(seq) })
 			}
 			if len(output) > 0 {
-				wg.Add(1)
-				go sound.Write(seq, output, &wg)
+				wg.Go(func() { sound.Write(seq, output) })
 			}
 			wg.Wait()
 			return nil
