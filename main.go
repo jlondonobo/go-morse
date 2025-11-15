@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -90,6 +91,8 @@ func toMorse(s string) string {
 	return sb.String()
 }
 
+var ErrInvalidPitch = errors.New("invalid pitch")
+
 func main() {
 	var wg sync.WaitGroup
 
@@ -138,6 +141,10 @@ func main() {
 			},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
+			if pitch < 300 || pitch > 1000 {
+				return fmt.Errorf("%w: must be between 300 and 1000, got %d", ErrInvalidPitch, pitch)
+			}
+
 			seq := toMorse(translateInput)
 			fmt.Println(seq)
 			if play {
@@ -150,7 +157,9 @@ func main() {
 			if output {
 				wg.Go(func() { sound.Write(seq, "sound.wav", pitch) })
 			} else if len(file) > 0 {
-				wg.Go(func() { sound.Write(seq, file, pitch) })
+				wg.Go(func() {
+					sound.Write(seq, file, pitch)
+				})
 			}
 
 			wg.Wait()
