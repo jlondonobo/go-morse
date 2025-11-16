@@ -44,14 +44,20 @@ morse 'Lets go, Carlos, lets go' -sf 'carlitos.wav'
 
 By default, the sound output is a 700hz sine wave. With a speed of 20 words per minute (WPM).
 
-Morse supports configuring the pitch of sound anywhere from 300hz to 1000hz by using the `--pitch` flag or its short form `-p`.
+Morse supports configuring the pitch, and speed of sound using the `--pitch` and `--speed` flags.
+
+### Pitch
+You can set the pitch anywhere from 300hz to 1000hz via the `--pitch` 
 
 ```console
 morse 'Ace' -s --pitch 500
 ```
 
-Or a shorter version
+### Speed
+Morse code speed is measured in **words per minute** (wpm). Because characters might have different lengths, the convention is to meausre words per minute using the word "PARIS " with a space at the end.
+
+`morse` produces sound outputs at 20wpm, try adjusting it to anything between 5-40 wpm.
 
 ```console
-morse 'Ace' -sp 500
+morse 'That is a magnificent shot' -s --speed 35
 ```

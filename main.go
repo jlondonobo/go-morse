@@ -17,7 +17,8 @@ import (
 )
 
 const (
-	DefaultPitch = 700
+	DefaultPitch          = 700
+	DefaultWordsPerMinute = 20
 )
 
 var morseDictionary = map[string]string{
@@ -91,7 +92,7 @@ func toMorse(s string) string {
 	return sb.String()
 }
 
-var ErrInvalidPitch = errors.New("invalid pitch")
+var ErrInvalidParameter = errors.New("invalid parameter")
 
 func main() {
 	var wg sync.WaitGroup
@@ -101,6 +102,7 @@ func main() {
 	var output bool
 	var file string
 	var pitch uint16
+	var wpm uint8
 
 	cmd := &cli.Command{
 		UseShortOptionHandling: true,
@@ -139,26 +141,35 @@ func main() {
 				Destination: &pitch,
 				Value:       DefaultPitch,
 			},
+			&cli.Uint8Flag{
+				Name:        "speed",
+				Usage:       "sets the ouput speed in words per minute, higher means faster",
+				Destination: &wpm,
+				Value:       DefaultWordsPerMinute,
+			},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			if pitch < 300 || pitch > 1000 {
-				return fmt.Errorf("%w: must be between 300 and 1000, got %d", ErrInvalidPitch, pitch)
+				return fmt.Errorf("%w: pitch must be between 300 and 1000, got %d", ErrInvalidParameter, pitch)
+			}
+			if wpm < 5 || wpm > 40 {
+				return fmt.Errorf("%w: speed must be between 5 and 40, got %d", ErrInvalidParameter, wpm)
 			}
 
 			seq := toMorse(translateInput)
 			fmt.Println(seq)
 			if play {
-				wg.Go(func() { sound.Play(seq, pitch) })
+				wg.Go(func() { sound.Play(seq, pitch, wpm) })
 			}
 			if output && (len(file) > 0) {
 				log.Fatal("Cannot use --output and --output-file at the same time.")
 				return nil
 			}
 			if output {
-				wg.Go(func() { sound.Write(seq, "sound.wav", pitch) })
+				wg.Go(func() { sound.Write(seq, "sound.wav", pitch, wpm) })
 			} else if len(file) > 0 {
 				wg.Go(func() {
-					sound.Write(seq, file, pitch)
+					sound.Write(seq, file, pitch, wpm)
 				})
 			}
 

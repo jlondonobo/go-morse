@@ -12,20 +12,20 @@ import (
 )
 
 const (
-	WordsPerMinute = 20
+	WordsPerMinute = 40
 	SampleRate     = beep.SampleRate(48000)
 )
 
 // Todo: Would be a lot more efficiento to seek Streamer to 0 instead of recreating it.
-func generate(s string, pitch uint16) beep.Streamer {
+func generate(s string, pitch uint16, wpm uint8) beep.Streamer {
 	sine, err := generators.SineTone(SampleRate, float64(pitch))
 	if err != nil {
 		log.Fatal("Error generating sine tone")
 	}
 	silence := generators.Silence(-1)
 	// based on: https://morsecode.world/international/timing/
-	spd := time.Duration(60 * 1000 / (50 * WordsPerMinute)) // in milliseconds
-	dit := SampleRate.N(time.Millisecond * spd)
+	unitDur := time.Duration(60*1000/(50*int(wpm))) * time.Millisecond // in milliseconds
+	dit := SampleRate.N(unitDur)
 	dah := dit * 3
 
 	// todo: this is not exact correspondence. Just for convenience assuming
@@ -48,11 +48,11 @@ func generate(s string, pitch uint16) beep.Streamer {
 	return beep.Seq(sounds...)
 }
 
-func Play(s string, pitch uint16) {
+func Play(s string, pitch uint16, wpm uint8) {
 	speaker.Init(SampleRate, 4800)
 
 	ch := make(chan struct{})
-	seq := generate(s, pitch)
+	seq := generate(s, pitch, wpm)
 
 	sounds := beep.Seq(seq, beep.Callback(func() { ch <- struct{}{} }))
 	speaker.Play(sounds)
@@ -60,8 +60,8 @@ func Play(s string, pitch uint16) {
 	time.Sleep(200 * time.Millisecond) // to ensure last signal plays
 }
 
-func Write(s string, name string, pitch uint16) {
-	finalStreamer := generate(s, pitch)
+func Write(s string, name string, pitch uint16, wpm uint8) {
+	finalStreamer := generate(s, pitch, wpm)
 	outFile, err := os.Create(name)
 	if err != nil {
 		log.Fatal("Unable to create file.")
