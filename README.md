@@ -8,13 +8,13 @@
 - Output string representation to `stdout`.
 - Output sound representation to a `.wav` file via the `--output` flag.
 - Supports short flags like `-s` (sound) and `-o` (output).
-- Configure sound pitch `--pitch`
+- Configure sound pitch, speed, and tone.
 
 ## Quickstart
 
 To translate text to Morse code, run:
 
-```console
+```bash
 morse 'Vamos' -s
 ```
 
@@ -22,21 +22,21 @@ This command will write the string representation to standard output and play it
 
 To name the ouput file something different, use the `--file-name` (`-f`) flag. For example:
 
-```console
+```bash
 morse 'Lets go, Carlos, lets go' -sf 'carlitos.wav'
 ```
 
 
-## Configuring sounds
+## Configuration
 
-By default, the sound output is a 700hz sine wave. With a speed of 20 words per minute (WPM).
+By default, `morse` plays a 700Hz sine wave at 20 words per minute. But you can change its pitch, speed, and tone.
 
-Morse supports configuring the pitch, and speed of sound using the `--pitch` and `--speed` flags.
+Morse supports configuring the ouptut sound using the `--pitch`, `--speed`, and `--tone` flags.
 
 ### Pitch
-You can set the pitch anywhere from 300hz to 1000hz via the `--pitch` 
+You can set the pitch anywhere from 300Hz to 1000Hz via the `--pitch` flag.
 
-```console
+```bash
 morse 'Ace' -s --pitch 500
 ```
 
@@ -45,14 +45,14 @@ Morse code speed is measured in **words per minute** (wpm). Because characters m
 
 `morse` produces sound outputs at 20wpm, try adjusting it to anything between 5-40 wpm.
 
-```console
+```bash
 morse 'What a magnificent shot' -s --speed 35
 ```
 
 ### Tone
 Set the output tone to one of `sine`, `triangle`, `sawtooth` and `square`. Via the `--tone` flag.
 
-```console
+```bash
 morse 'And the champion of the 2025 Nitto ATP finals is Jannik Sinner' -s --tone triangle
 ```
 - `sine`: The base, smooth. Makes up all other waves.
