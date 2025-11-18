@@ -1,4 +1,4 @@
-module joselondono/morse
+module github.com/jlondonobo/morse
 
 go 1.25.3
 
