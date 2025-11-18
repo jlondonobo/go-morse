@@ -142,12 +142,24 @@ func main() {
 				Usage:       "sets the ouput pitch",
 				Destination: &pitch,
 				Value:       DefaultPitch,
+				Action: func(ctxt context.Context, cmd *cli.Command, v uint16) error {
+					if v < 300 || v > 1000 {
+						return fmt.Errorf("%w: pitch value '%d' out of range [300-1000]", ErrInvalidParameter, pitch)
+					}
+					return nil
+				},
 			},
 			&cli.Uint8Flag{
 				Name:        "speed",
 				Usage:       "sets the ouput speed in words per minute, higher means faster",
 				Destination: &wpm,
 				Value:       DefaultWordsPerMinute,
+				Action: func(ctxt context.Context, cmd *cli.Command, v uint8) error {
+					if v < 5 || v > 40 {
+						return fmt.Errorf("%w: speed value '%d' out of range [5-40]", ErrInvalidParameter, wpm)
+					}
+					return nil
+				},
 			},
 			&cli.StringFlag{
 				Name:        "tone",
@@ -157,20 +169,13 @@ func main() {
 				Action: func(ctxt context.Context, cmd *cli.Command, v string) error {
 					_, ok := sound.ToneGenerator[v]
 					if !ok {
-						return fmt.Errorf("invalid tone '%v' must be one of 'sine' 'triangle' 'sawtooth' 'square'", v)
+						return fmt.Errorf("invalid tone '%v' must be one of ['sine' 'triangle' 'sawtooth' 'square']", v)
 					}
 					return nil
 				},
 			},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
-			if pitch < 300 || pitch > 1000 {
-				return fmt.Errorf("%w: pitch must be between 300 and 1000, got %d", ErrInvalidParameter, pitch)
-			}
-			if wpm < 5 || wpm > 40 {
-				return fmt.Errorf("%w: speed must be between 5 and 40, got %d", ErrInvalidParameter, wpm)
-			}
-
 			seq := toMorse(translateInput)
 			fmt.Println(seq)
 			if play {
