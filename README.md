@@ -25,20 +25,6 @@ To name the ouput file something different, use the `--file-name` (`-f`) flag. F
 morse 'Lets go, Carlos, lets go' -sf 'carlitos.wav'
 ```
 
-## Roadmap
-
-- [x] Enable saving sound to file
-- [x] Make functions run in parallel
-- [x] Set up short-version flags
-- [x] Extend punctuation
-- [x] Add a default file name for better ergonomics
-- [ ] Enable editing sound qualities
-
-  - [ ] Speed
-  - [ ] Pitch
-  - [ ] Volume
-
-- [ ] Improve efficiency of steream construction / duplication.
 
 ## Configuring sounds
 
@@ -59,5 +45,32 @@ Morse code speed is measured in **words per minute** (wpm). Because characters m
 `morse` produces sound outputs at 20wpm, try adjusting it to anything between 5-40 wpm.
 
 ```console
-morse 'That is a magnificent shot' -s --speed 35
+morse 'What a magnificent shot' -s --speed 35
 ```
+
+### Tone
+Set the output tone to one of `sine`, `triangle`, `sawtooth` and `square`. Via the `--tone` flag.
+
+```console
+morse 'And the champion of the 2025 Nitto ATP finals is Jannik Sinner' -s --tone triangle
+```
+- `sine`: The base, smooth. Makes up all other waves.
+- `square`: Richer and buzzier.
+- `triangle`: Between sine and square.
+- `sawtooth`: More friction and the buzziest of all.
+
+
+## Roadmap
+
+- [x] Enable saving sound to file
+- [x] Make functions run in parallel
+- [x] Set up short-version flags
+- [x] Extend punctuation
+- [x] Add a default file name for better ergonomics
+- [x] Enable editing sound qualities
+  - [x] Speed
+  - [x] Pitch
+  - [x] Tone
+
+- [ ] Improve efficiency of steream construction / duplication.
+- [ ] Improve error handling in goroutine
