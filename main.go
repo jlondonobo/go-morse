@@ -177,21 +177,21 @@ func main() {
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			seq := toMorse(translateInput)
-			conf := sound.Config{Pitch: pitch, Wpm: wpm, WaveType: waveType}
+			conf := &sound.Config{Pitch: pitch, Wpm: wpm, WaveType: waveType}
 
 			fmt.Println(seq)
 			if play {
-				wg.Go(func() { sound.Play(seq, &conf) })
+				wg.Go(func() { sound.Play(seq, conf) })
 			}
 			if output && (len(file) > 0) {
 				log.Fatal("Cannot use --output and --output-file at the same time.")
 				return nil
 			}
 			if output {
-				wg.Go(func() { sound.Write(seq, "sound.wav", &conf) })
+				wg.Go(func() { sound.Write(seq, "sound.wav", conf) })
 			} else if len(file) > 0 {
 				wg.Go(func() {
-					sound.Write(seq, file, &conf)
+					sound.Write(seq, file, conf)
 				})
 			}
 
