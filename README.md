@@ -10,6 +10,14 @@
 - Supports short flags like `-s` (sound) and `-o` (output).
 - Configure sound pitch, speed, and tone.
 
+## Installation
+Installing `morse` requires that you have Go installed in your system. Then run:
+
+```bash
+go install github.com/jlondonobo/morse@latest
+```
+
+
 ## Quickstart
 
 To translate text to Morse code, run:
